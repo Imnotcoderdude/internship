@@ -1,4 +1,4 @@
-package com.minimallifestyleproject.intership.user;
+package com.minimallifestyleproject.intership.user.dto;
 
 import lombok.Data;
 
