@@ -10,3 +10,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+
+token:
+  access:
+    time: ${ACCESS_EXPIRE_TIME}
+  refresh:
+    time: ${REFRESH_EXPIRE_TIME}
+
+key:
+  SecretKey: ${SECRET_KEY}
