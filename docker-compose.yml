@@ -1,5 +1,16 @@
 version: "3.8"
 services:
+  app:
+    image: intership:latest
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
   db:
     image: mysql:8.0.28
     platform: linux/x86_64
