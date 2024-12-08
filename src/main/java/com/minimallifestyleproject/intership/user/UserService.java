@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -31,10 +32,12 @@ public class UserService {
 
     public UserResponseDto signup(UserRequestDto requestDto) {
 
+        Objects.requireNonNull(requestDto, "회원가입 - UserRequestDto Null 값 할당됨");
+
         UserEntity user = UserEntity.builder()
-                .username(requestDto.getUsername())
-                .nickname(requestDto.getNickname())
-                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .username(requestException(requestDto.getUsername(), "회원가입" ,"username"))
+                .nickname(requestException(requestDto.getNickname(), "회원가입" ,"nickname"))
+                .password(passwordEncoder.encode(requestException(requestDto.getPassword(), "회원가입" ,"password")))
                 .role(UserEntity.Role.ROLE_USER)
                 .build();
 
@@ -50,11 +53,16 @@ public class UserService {
     }
 
     public LoginResponseDto login(LoginRequestDto requestDto) {
+        Objects.requireNonNull(requestDto, "LoginRequestDto must not be null.");
+
+        String username = requestException(requestDto.getUsername(), "로그인" ,"username");
+        String password = requestException(requestDto.getPassword(), "로그인" ,"password");
+
         log.info("로그인 시작");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        requestDto.getUsername(),
-                        requestDto.getPassword(),
+                        username,
+                        password,
                         null
                 )
         );
@@ -73,7 +81,11 @@ public class UserService {
         userRepository.save(user);
 
         return new LoginResponseDto(accessToken);
+    }
 
+//////////////////////////// TOOL BOX ////////////////////////////////I
+    private String requestException(String dto, String value ,String name) {
+        return Objects.requireNonNull(dto, value+ " - " + name + " Null 값 할당됨");
     }
 
     //
